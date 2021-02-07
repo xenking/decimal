@@ -1,6 +1,6 @@
 # decimal
 
-[![Build Status](https://travis-ci.org/shopspring/decimal.png?branch=master)](https://travis-ci.org/shopspring/decimal) [![GoDoc](https://godoc.org/github.com/shopspring/decimal?status.svg)](https://godoc.org/github.com/shopspring/decimal) [![Go Report Card](https://goreportcard.com/badge/github.com/shopspring/decimal)](https://goreportcard.com/report/github.com/shopspring/decimal)
+[![Build Status](https://travis-ci.org/xenking/decimal.png?branch=master)](https://travis-ci.org/xenking/decimal) [![GoDoc](https://godoc.org/github.com/xenking/decimal?status.svg)](https://godoc.org/github.com/xenking/decimal) [![Go Report Card](https://goreportcard.com/badge/github.com/xenking/decimal)](https://goreportcard.com/report/github.com/xenking/decimal)
 
 Arbitrary-precision fixed-point decimal numbers in go.
 
@@ -16,7 +16,7 @@ _Note:_ Decimal library can "only" represent numbers with a maximum of 2^31 digi
 
 ## Install
 
-Run `go get github.com/shopspring/decimal`
+Run `go get github.com/xenking/decimal`
 
 ## Requirements 
 
@@ -29,7 +29,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/shopspring/decimal"
+	"github.com/xenking/decimal"
 )
 
 func main() {
@@ -59,7 +59,7 @@ func main() {
 
 ## Documentation
 
-http://godoc.org/github.com/shopspring/decimal
+https://pkg.go.dev/github.com/xenking/decimal
 
 ## Production Usage
 
@@ -70,7 +70,7 @@ http://godoc.org/github.com/shopspring/decimal
 
 #### Why don't you just use float64?
 
-Because float64 (or any binary floating point type, actually) can't represent
+Because float64 (or any binary floating-point type, actually) can't represent
 numbers such as `0.1` exactly.
 
 Consider this code: http://play.golang.org/p/TQBd4yJe6B You might expect that
@@ -104,7 +104,7 @@ But, it is much easier to be careful with Decimal than with big.Rat.
 #### Why isn't the API similar to big.Int's?
 
 big.Int's API is built to reduce the number of memory allocations for maximal
-performance. This makes sense for its use-case, but the trade-off is that the
+performance. These makes sense for its use-case, but the trade-off is that the
 API is awkward and easy to misuse.
 
 For example, to add two big.Ints, you do: `z := new(big.Int).Add(x, y)`. A
