@@ -1,6 +1,6 @@
 # decimal
 
-[![Build Status](https://travis-ci.org/xenking/decimal.png?branch=master)](https://travis-ci.org/xenking/decimal) [![GoDoc](https://godoc.org/github.com/xenking/decimal?status.svg)](https://godoc.org/github.com/xenking/decimal) [![Go Report Card](https://goreportcard.com/badge/github.com/xenking/decimal)](https://goreportcard.com/report/github.com/xenking/decimal)
+[![Build Status](https://travis-ci.com/xenking/decimal.svg?branch=master)](https://travis-ci.com/xenking/decimal) [![GoDoc](https://godoc.org/github.com/xenking/decimal?status.svg)](https://godoc.org/github.com/xenking/decimal) [![Go Report Card](https://goreportcard.com/badge/github.com/xenking/decimal)](https://goreportcard.com/report/github.com/xenking/decimal)
 
 Arbitrary-precision fixed-point decimal numbers in go.
 
