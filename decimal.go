@@ -804,6 +804,13 @@ func (d Decimal) Float64() (f float64, exact bool) {
 	return d.Rat().Float64()
 }
 
+// InexactFloat64 returns the nearest float64 value for d.
+// It doesn't indicate if the returned value represents d exactly.
+func (d Decimal) InexactFloat64() float64 {
+	f, _ := d.Float64()
+	return f
+}
+
 // String returns the string representation of the decimal
 // with the fixed point.
 //
@@ -892,7 +899,59 @@ func (d Decimal) Round(places int32) Decimal {
 	return ret
 }
 
-// RoundUp rounds the decimal towards +infinity.
+// RoundCeil rounds the decimal towards +infinity.
+//
+// Example:
+//
+//     NewFromFloat(545).RoundCeil(-2).String()   // output: "600"
+//     NewFromFloat(500).RoundCeil(-2).String()   // output: "500"
+//     NewFromFloat(1.1001).RoundCeil(2).String() // output: "1.11"
+//     NewFromFloat(-1.454).RoundCeil(1).String() // output: "-1.5"
+//
+func (d Decimal) RoundCeil(places int32) Decimal {
+	if d.exp >= -places {
+		return d
+	}
+
+	rescaled := d.rescale(-places)
+	if d.Equal(rescaled) {
+		return d
+	}
+
+	if d.value.Sign() > 0 {
+		rescaled.value.Add(rescaled.value, oneInt)
+	}
+
+	return rescaled
+}
+
+// RoundFloor rounds the decimal towards -infinity.
+//
+// Example:
+//
+//     NewFromFloat(545).RoundFloor(-2).String()   // output: "500"
+//     NewFromFloat(-500).RoundFloor(-2).String()   // output: "-500"
+//     NewFromFloat(1.1001).RoundFloor(2).String() // output: "1.1"
+//     NewFromFloat(-1.454).RoundFloor(1).String() // output: "-1.4"
+//
+func (d Decimal) RoundFloor(places int32) Decimal {
+	if d.exp >= -places {
+		return d
+	}
+
+	rescaled := d.rescale(-places)
+	if d.Equal(rescaled) {
+		return d
+	}
+
+	if d.value.Sign() < 0 {
+		rescaled.value.Sub(rescaled.value, oneInt)
+	}
+
+	return rescaled
+}
+
+// RoundUp rounds the decimal away from zero.
 //
 // Example:
 //
@@ -913,12 +972,14 @@ func (d Decimal) RoundUp(places int32) Decimal {
 
 	if d.value.Sign() > 0 {
 		rescaled.value.Add(rescaled.value, oneInt)
+	} else if d.value.Sign() < 0 {
+		rescaled.value.Sub(rescaled.value, oneInt)
 	}
 
 	return rescaled
 }
 
-// RoundDown rounds the decimal towards -infinity.
+// RoundDown rounds the decimal towards zero.
 //
 // Example:
 //
@@ -936,11 +997,6 @@ func (d Decimal) RoundDown(places int32) Decimal {
 	if d.Equal(rescaled) {
 		return d
 	}
-
-	if d.value.Sign() < 0 {
-		rescaled.value.Sub(rescaled.value, oneInt)
-	}
-
 	return rescaled
 }
 
@@ -1379,6 +1435,33 @@ func (d NullDecimal) MarshalJSON() ([]byte, error) {
 		return []byte("null"), nil
 	}
 	return d.Decimal.MarshalJSON()
+}
+
+// UnmarshalText implements the encoding.TextUnmarshaler interface for XML
+// deserialization
+func (d *NullDecimal) UnmarshalText(text []byte) error {
+	str := string(text)
+
+	// check for empty XML or XML without body e.g., <tag></tag>
+	if str == "" {
+		d.Valid = false
+		return nil
+	}
+	if err := d.Decimal.UnmarshalText(text); err != nil {
+		d.Valid = false
+		return err
+	}
+	d.Valid = true
+	return nil
+}
+
+// MarshalText implements the encoding.TextMarshaler interface for XML
+// serialization.
+func (d NullDecimal) MarshalText() (text []byte, err error) {
+	if !d.Valid {
+		return []byte{}, nil
+	}
+	return d.Decimal.MarshalText()
 }
 
 // Trig functions
